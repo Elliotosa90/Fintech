@@ -6,7 +6,6 @@
   <title>PayFlow</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* ===== RESET & BASE ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -15,15 +14,10 @@
       color: #1f2937;
     }
 
-    /* ===== LAYOUT ===== */
-    .container {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 16px;
-    }
+    .container { max-width: 640px; margin: 0 auto; padding: 16px; }
     .hidden { display: none !important; }
 
-    /* ===== HEADER ===== */
+    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
@@ -36,10 +30,7 @@
       align-items: center;
       gap: 12px;
     }
-    .header-right .email {
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
+    .header-right .email { font-size: 0.8rem; color: #6b7280; }
     .btn-logout {
       background: none;
       border: none;
@@ -49,7 +40,7 @@
     }
     .btn-logout:hover { text-decoration: underline; }
 
-    /* ===== BUTTONS ===== */
+    /* Buttons */
     .btn {
       display: inline-block;
       padding: 12px 20px;
@@ -60,26 +51,24 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-primary { background: #2563eb; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+    .btn-primary:hover:not(:disabled) { background: #1d4ed8; }
     .btn-success { background: #059669; color: #fff; }
-    .btn-success:hover { background: #047857; }
-    .btn-success:disabled { background: #6ee7b7; cursor: not-allowed; }
-
+    .btn-success:hover:not(:disabled) { background: #047857; }
     .btn-outline {
       background: #fff;
       border: 1.5px solid #d1d5db;
       color: #374151;
     }
-    .btn-outline:hover { background: #f9fafb; }
+    .btn-outline:hover:not(:disabled) { background: #f9fafb; }
     .btn-outline.active {
       background: #2563eb;
       border-color: #2563eb;
       color: #fff;
     }
 
-    /* ===== AUTH CARD ===== */
+    /* Auth Card */
     .auth-card {
       background: #fff;
       padding: 32px;
@@ -87,26 +76,12 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       max-width: 400px;
       margin: 60px auto 0;
-      position: relative;
     }
-    .auth-card h2 {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .auth-card .logo-big {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-    .auth-card .subtitle {
-      text-align: center;
-      color: #6b7280;
-      font-size: 0.85rem;
-      margin-bottom: 20px;
-    }
+    .auth-card h2 { font-size: 1.5rem; margin-bottom: 8px; text-align: center; }
+    .auth-card .logo-big { text-align: center; font-size: 2.5rem; margin-bottom: 4px; }
+    .auth-card .subtitle { text-align: center; color: #6b7280; font-size: 0.85rem; margin-bottom: 20px; }
 
-    /* ===== FORMS ===== */
+    /* Forms */
     .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
@@ -126,6 +101,7 @@
       font-size: 1rem;
       outline: none;
       transition: border 0.2s;
+      background: #fff;
     }
     input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
@@ -135,11 +111,7 @@
       font-size: 0.9rem;
       color: #6b7280;
     }
-    .form-footer a {
-      color: #2563eb;
-      text-decoration: underline;
-      cursor: pointer;
-    }
+    .form-footer a { color: #2563eb; text-decoration: underline; cursor: pointer; }
 
     .message {
       text-align: center;
@@ -151,7 +123,7 @@
     .message.error { color: #dc2626; background: #fef2f2; }
     .message.success { color: #059669; background: #ecfdf5; }
 
-    /* ===== ADMIN DOT ===== */
+    /* Admin Dot */
     .admin-dot {
       position: fixed;
       bottom: 16px;
@@ -166,7 +138,7 @@
     }
     .admin-dot:hover { background: #9ca3af; }
 
-    /* ===== ADMIN PANEL ===== */
+    /* Admin Modal */
     .admin-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -180,15 +152,13 @@
       background: #fff;
       padding: 32px;
       border-radius: 16px;
-      width: 400px;
+      width: 480px;
       max-width: 90vw;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
     }
-    .admin-modal h2 {
-      font-size: 1.3rem;
-      margin-bottom: 16px;
-      text-align: center;
-    }
+    .admin-modal h2 { font-size: 1.3rem; margin-bottom: 16px; text-align: center; }
     .admin-modal .close-btn {
       float: right;
       background: none;
@@ -196,39 +166,20 @@
       font-size: 1.5rem;
       cursor: pointer;
       color: #9ca3af;
+      line-height: 1;
     }
     .admin-modal .close-btn:hover { color: #374151; }
-    .admin-modal table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      font-size: 0.85rem;
-    }
-    .admin-modal th, .admin-modal td {
-      padding: 8px 6px;
-      text-align: left;
-      border-bottom: 1px solid #e5e7eb;
-    }
+    .admin-modal table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.85rem; }
+    .admin-modal th, .admin-modal td { padding: 8px 6px; text-align: left; border-bottom: 1px solid #e5e7eb; }
     .admin-modal th { font-weight: 600; color: #374151; }
-    .admin-modal .user-list {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .admin-modal .admin-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-    }
+    .admin-modal .user-list { max-height: 220px; overflow-y: auto; }
+    .admin-modal .admin-actions { display: flex; gap: 8px; margin-top: 16px; }
     .admin-modal .admin-actions .btn { flex: 1; font-size: 0.85rem; padding: 8px 12px; }
-    .admin-modal .admin-login-btn {
-      width: 100%;
-      margin-top: 12px;
-      background: #7c3aed;
-      color: #fff;
-    }
-    .admin-modal .admin-login-btn:hover { background: #6d28d9; }
+    .admin-login-btn { width: 100%; margin-top: 12px; background: #7c3aed; color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; }
+    .admin-login-btn:hover:not(:disabled) { background: #6d28d9; }
+    .admin-login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* ===== BALANCE CARD ===== */
+    /* Balance Card */
     .balance-card {
       background: linear-gradient(135deg, #2563eb, #4f46e5);
       color: #fff;
@@ -237,17 +188,10 @@
       box-shadow: 0 4px 16px rgba(37,99,235,0.3);
       margin-bottom: 20px;
     }
-    .balance-card .label {
-      font-size: 0.85rem;
-      opacity: 0.8;
-    }
-    .balance-card .amount {
-      font-size: 2.8rem;
-      font-weight: 700;
-      margin-top: 4px;
-    }
+    .balance-card .label { font-size: 0.85rem; opacity: 0.8; }
+    .balance-card .amount { font-size: 2.8rem; font-weight: 700; margin-top: 4px; }
 
-    /* ===== ACTION GRID ===== */
+    /* Action Grid */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -256,7 +200,7 @@
     }
     .action-grid .btn { text-align: center; padding: 14px 8px; font-size: 0.9rem; }
 
-    /* ===== ACTION FORM ===== */
+    /* Action Form */
     .action-card {
       background: #fff;
       padding: 24px;
@@ -264,28 +208,18 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       margin-bottom: 20px;
     }
-    .action-card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      text-transform: capitalize;
-    }
+    .action-card h3 { font-size: 1.1rem; margin-bottom: 16px; text-transform: capitalize; }
     .action-card .btn { width: 100%; margin-top: 8px; }
 
-    /* ===== TRANSACTION HISTORY ===== */
+    /* Transactions */
     .tx-card {
       background: #fff;
       padding: 24px;
       border-radius: 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .tx-card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-    }
-    .tx-list {
-      max-height: 340px;
-      overflow-y: auto;
-    }
+    .tx-card h3 { font-size: 1.1rem; margin-bottom: 16px; }
+    .tx-list { max-height: 340px; overflow-y: auto; }
     .tx-item {
       display: flex;
       justify-content: space-between;
@@ -294,31 +228,13 @@
       border-bottom: 1px solid #f3f4f6;
     }
     .tx-item:last-child { border-bottom: none; }
-    .tx-info .tx-type {
-      font-weight: 600;
-      text-transform: capitalize;
-    }
-    .tx-info .tx-desc {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
-    .tx-info .tx-date {
-      font-size: 0.75rem;
-      color: #d1d5db;
-    }
-    .tx-amount {
-      font-weight: 700;
-      font-size: 1.05rem;
-    }
+    .tx-info .tx-type { font-weight: 600; text-transform: capitalize; }
+    .tx-info .tx-desc { font-size: 0.8rem; color: #9ca3af; margin-top: 2px; }
+    .tx-info .tx-date { font-size: 0.75rem; color: #d1d5db; }
+    .tx-amount { font-weight: 700; font-size: 1.05rem; }
     .tx-amount.positive { color: #059669; }
     .tx-amount.negative { color: #dc2626; }
-
-    .empty-state {
-      text-align: center;
-      color: #9ca3af;
-      padding: 20px 0;
-    }
+    .empty-state { text-align: center; color: #9ca3af; padding: 20px 0; }
   </style>
 </head>
 <body>
@@ -361,8 +277,6 @@
   <!-- ===== DASHBOARD VIEW ===== -->
   <div id="dashboardView" class="hidden">
     <div class="container">
-
-      <!-- Header -->
       <div class="header">
         <h1>💸 PayFlow</h1>
         <div class="header-right">
@@ -371,60 +285,50 @@
         </div>
       </div>
 
-      <!-- Balance -->
       <div class="balance-card">
         <div class="label">Your Balance</div>
         <div class="amount" id="balanceDisplay">$0.00</div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="action-grid">
         <button class="btn btn-outline" data-mode="deposit">💰 Deposit</button>
         <button class="btn btn-outline" data-mode="withdraw">🏧 Withdraw</button>
         <button class="btn btn-outline" data-mode="transfer">📤 Transfer</button>
       </div>
 
-      <!-- Action Form -->
       <div id="actionForm" class="action-card hidden">
         <h3 id="actionTitle">Deposit</h3>
-
         <div class="form-group">
           <label for="actionAmount">Amount ($)</label>
           <input type="number" id="actionAmount" step="0.01" min="0.01" placeholder="0.00" />
         </div>
-
         <div id="recipientGroup" class="form-group hidden">
           <label for="recipientEmail">Recipient Email</label>
           <input type="email" id="recipientEmail" placeholder="friend@example.com" />
         </div>
-
         <button id="actionSubmitBtn" class="btn btn-success">Deposit</button>
         <button id="actionCancelBtn" class="btn btn-outline" style="width:100%;margin-top:6px">Cancel</button>
-
         <div id="actionMessage" class="message hidden"></div>
       </div>
 
-      <!-- Transaction History -->
       <div class="tx-card">
         <h3>Transaction History</h3>
         <div id="txList" class="tx-list">
           <div class="empty-state">No transactions yet.</div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ===== ADMIN DOT ===== -->
+  <!-- Admin Dot -->
   <div class="admin-dot" id="adminDot" title="Admin Login"></div>
 
-  <!-- ===== ADMIN MODAL ===== -->
+  <!-- Admin Modal -->
   <div id="adminOverlay" class="admin-overlay hidden">
     <div class="admin-modal">
       <button class="close-btn" id="adminCloseBtn">&times;</button>
       <h2>🔐 Admin Panel</h2>
 
-      <!-- Admin Login -->
       <div id="adminLoginSection">
         <div class="form-group">
           <label for="adminEmail">Admin Email</label>
@@ -434,11 +338,10 @@
           <label for="adminPassword">Password</label>
           <input type="password" id="adminPassword" placeholder="••••••••" />
         </div>
-        <button id="adminLoginBtn" class="btn admin-login-btn">Login as Admin</button>
+        <button id="adminLoginBtn" class="admin-login-btn">Login as Admin</button>
         <div id="adminMessage" class="message hidden"></div>
       </div>
 
-      <!-- Admin Dashboard (shown after login) -->
       <div id="adminDashboard" class="hidden">
         <p style="font-size:0.9rem;color:#6b7280;margin-bottom:12px">
           Logged in as: <strong id="adminEmailDisplay"></strong>
@@ -456,15 +359,17 @@
   </div>
 
   <script>
-    // ===== SUPABASE CONFIG =====
-    // !!! REPLACE THESE WITH YOUR OWN SUPABASE PROJECT CREDENTIALS !!!
+    // ===== CONFIG =====
+    // !!! REPLACE THESE !!!
     const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
     const SUPABASE_ANON_KEY = 'your-anon-key-here';
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ===== DOM REFS =====
+    // ===== HELPERS =====
     const $ = (id) => document.getElementById(id);
+
+    // ===== DOM REFS =====
     const authView = $('authView');
     const dashboardView = $('dashboardView');
     const authForm = $('authForm');
@@ -488,8 +393,6 @@
     const actionCancelBtn = $('actionCancelBtn');
     const actionMessage = $('actionMessage');
     const txList = $('txList');
-
-    // Admin elements
     const adminDot = $('adminDot');
     const adminOverlay = $('adminOverlay');
     const adminCloseBtn = $('adminCloseBtn');
@@ -507,11 +410,10 @@
     let isSignUp = false;
     let currentMode = null;
     let currentSession = null;
-    let isAdminLoggedIn = false;
-    let adminSession = null;
 
-    // ===== AUTH TOGGLE (Sign In / Sign Up) =====
-    authToggleLink.addEventListener('click', () => {
+    // ===== AUTH TOGGLE =====
+    authToggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
       isSignUp = !isSignUp;
       nameGroup.classList.toggle('hidden', !isSignUp);
       authBtn.textContent = isSignUp ? 'Sign Up' : 'Sign In';
@@ -520,12 +422,11 @@
       authMessage.classList.add('hidden');
     });
 
-    // ===== AUTH SUBMIT (Sign In / Sign Up) =====
+    // ===== AUTH SUBMIT =====
     authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       authMessage.classList.add('hidden');
       authBtn.disabled = true;
-      const originalText = authBtn.textContent;
       authBtn.textContent = 'Please wait...';
 
       try {
@@ -537,11 +438,21 @@
           });
           if (error) throw error;
 
-          // If sign-ups are auto-confirmed (no email verification), session will exist
+          // If auto-confirm is ON in Supabase, session will exist
           if (data?.session) {
-            // Session listener will handle the UI switch
+            showDashboard(data.session);
           } else {
-            showAuthMessage('Account created! Check your email for confirmation link.', 'success');
+            // Email confirmation required
+            showAuthMessage(
+              '✅ Account created! Check your email for the confirmation link, then sign in.',
+              'success'
+            );
+            // Switch to sign-in mode
+            isSignUp = false;
+            nameGroup.classList.add('hidden');
+            authBtn.textContent = 'Sign In';
+            authToggleText.textContent = "Don't have an account?";
+            authToggleLink.textContent = 'Sign Up';
           }
         } else {
           const { data, error } = await supabase.auth.signInWithPassword({
@@ -549,19 +460,21 @@
             password: password.value,
           });
           if (error) throw error;
-          // Session listener will handle dashboard switch
+          if (data?.session) {
+            showDashboard(data.session);
+          }
         }
       } catch (err) {
         showAuthMessage(err.message, 'error');
       } finally {
         authBtn.disabled = false;
-        authBtn.textContent = originalText;
+        if (!isSignUp) authBtn.textContent = 'Sign In';
       }
     });
 
     function showAuthMessage(msg, type) {
       authMessage.textContent = msg;
-      authMessage.className = `message ${type}`;
+      authMessage.className = 'message ' + type;
       authMessage.classList.remove('hidden');
     }
 
@@ -570,26 +483,119 @@
       await supabase.auth.signOut();
     });
 
-    // ===== ACTION BUTTONS (Deposit / Withdraw / Transfer) =====
+    // ===== SESSION LISTENER =====
+    // This runs on page load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) showDashboard(session);
+    });
+
+    // This listens for future auth changes
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        showDashboard(session);
+      } else if (event === 'SIGNED_OUT') {
+        hideDashboard();
+      }
+      // Ignore TOKEN_REFRESH and other events — they don't affect UI
+    });
+
+    // ===== SHOW / HIDE DASHBOARD =====
+    function showDashboard(session) {
+      currentSession = session;
+      authView.classList.add('hidden');
+      dashboardView.classList.remove('hidden');
+      userEmail.textContent = session.user.email;
+      loadProfile();
+      loadTransactions();
+    }
+
+    function hideDashboard() {
+      currentSession = null;
+      authView.classList.remove('hidden');
+      dashboardView.classList.add('hidden');
+      actionForm.classList.add('hidden');
+      document.querySelectorAll('[data-mode]').forEach((b) => b.classList.remove('active'));
+      // Reset the form
+      authForm.reset();
+      authMessage.classList.add('hidden');
+      // Reset to sign-in mode
+      isSignUp = false;
+      nameGroup.classList.add('hidden');
+      authBtn.textContent = 'Sign In';
+      authToggleText.textContent = "Don't have an account?";
+      authToggleLink.textContent = 'Sign Up';
+    }
+
+    // ===== LOAD PROFILE =====
+    async function loadProfile() {
+      if (!currentSession) return;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', currentSession.user.id)
+        .single();
+      if (error) {
+        console.error('Profile error:', error);
+        return;
+      }
+      balanceDisplay.textContent = '$' + parseFloat(data.balance || 0).toFixed(2);
+    }
+
+    // ===== LOAD TRANSACTIONS =====
+    async function loadTransactions() {
+      if (!currentSession) return;
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', currentSession.user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error('Transactions error:', error);
+        return;
+      }
+
+      txList.innerHTML = '';
+      if (!data || data.length === 0) {
+        txList.innerHTML = '<div class="empty-state">No transactions yet.</div>';
+        return;
+      }
+
+      data.forEach((tx) => {
+        const isPositive = tx.type === 'deposit' || tx.type === 'transfer_in';
+        const div = document.createElement('div');
+        div.className = 'tx-item';
+        div.innerHTML =
+          '<div class="tx-info">' +
+            '<div class="tx-type">' + tx.type.replace(/_/g, ' ') + '</div>' +
+            '<div class="tx-desc">' + (tx.description || '') + '</div>' +
+            '<div class="tx-date">' + new Date(tx.created_at).toLocaleString() + '</div>' +
+          '</div>' +
+          '<div class="tx-amount ' + (isPositive ? 'positive' : 'negative') + '">' +
+            (isPositive ? '+' : '-') + '$' + parseFloat(tx.amount).toFixed(2) +
+          '</div>';
+        txList.appendChild(div);
+      });
+    }
+
+    // ===== ACTION BUTTONS =====
     document.querySelectorAll('[data-mode]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.mode;
         document.querySelectorAll('[data-mode]').forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
-        openActionForm(mode);
+
+        currentMode = mode;
+        actionForm.classList.remove('hidden');
+        actionTitle.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+        actionSubmitBtn.textContent = mode === 'deposit' ? 'Deposit' : mode === 'withdraw' ? 'Withdraw' : 'Send Money';
+        recipientGroup.classList.toggle('hidden', mode !== 'transfer');
+        actionAmount.value = '';
+        recipientEmail.value = '';
+        actionMessage.classList.add('hidden');
       });
     });
-
-    function openActionForm(mode) {
-      currentMode = mode;
-      actionForm.classList.remove('hidden');
-      actionTitle.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
-      actionSubmitBtn.textContent = mode === 'deposit' ? 'Deposit' : mode === 'withdraw' ? 'Withdraw' : 'Send Money';
-      recipientGroup.classList.toggle('hidden', mode !== 'transfer');
-      actionAmount.value = '';
-      recipientEmail.value = '';
-      actionMessage.classList.add('hidden');
-    }
 
     actionCancelBtn.addEventListener('click', () => {
       actionForm.classList.add('hidden');
@@ -619,28 +625,28 @@
         if (currentMode === 'deposit') {
           result = await supabase.rpc('deposit_funds', {
             user_id: currentSession.user.id,
-            amount,
-            ref: `dep_${Date.now()}`,
+            amount: amount,
+            ref: 'dep_' + Date.now(),
           });
         } else if (currentMode === 'withdraw') {
           result = await supabase.rpc('withdraw_funds', {
             user_id: currentSession.user.id,
-            amount,
-            ref: `wd_${Date.now()}`,
+            amount: amount,
+            ref: 'wd_' + Date.now(),
           });
         } else if (currentMode === 'transfer') {
           result = await supabase.rpc('transfer_funds', {
             sender_id: currentSession.user.id,
             recipient_email: recipientEmail.value.trim(),
-            amount,
+            amount: amount,
           });
         }
 
         if (result.error) throw new Error(result.error.message);
 
-        const data = result.data;
-        if (data && data.success === false) {
-          showActionMessage(data.error, 'error');
+        const resData = result.data;
+        if (resData && resData.success === false) {
+          showActionMessage('❌ ' + resData.error, 'error');
         } else {
           showActionMessage('✅ Success!', 'success');
           actionAmount.value = '';
@@ -649,7 +655,7 @@
           await loadTransactions();
         }
       } catch (err) {
-        showActionMessage(err.message, 'error');
+        showActionMessage('❌ ' + err.message, 'error');
       } finally {
         actionSubmitBtn.disabled = false;
         actionSubmitBtn.textContent = originalText;
@@ -658,112 +664,22 @@
 
     function showActionMessage(msg, type) {
       actionMessage.textContent = msg;
-      actionMessage.className = `message ${type}`;
+      actionMessage.className = 'message ' + type;
       actionMessage.classList.remove('hidden');
     }
 
-    // ===== LOAD PROFILE =====
-    async function loadProfile() {
-      if (!currentSession) return;
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentSession.user.id)
-        .single();
-      if (error) {
-        console.error('Load profile error:', error);
-        return;
-      }
-      balanceDisplay.textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
-    }
-
-    // ===== LOAD TRANSACTIONS =====
-    async function loadTransactions() {
-      if (!currentSession) return;
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*')
-        .eq('user_id', currentSession.user.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (error) {
-        console.error('Load transactions error:', error);
-        return;
-      }
-
-      txList.innerHTML = '';
-      if (!data || data.length === 0) {
-        txList.innerHTML = '<div class="empty-state">No transactions yet.</div>';
-        return;
-      }
-
-      data.forEach((tx) => {
-        const isPositive = tx.type === 'deposit' || tx.type === 'transfer_in';
-        const div = document.createElement('div');
-        div.className = 'tx-item';
-        div.innerHTML = `
-          <div class="tx-info">
-            <div class="tx-type">${tx.type.replace(/_/g, ' ')}</div>
-            <div class="tx-desc">${tx.description || ''}</div>
-            <div class="tx-date">${new Date(tx.created_at).toLocaleString()}</div>
-          </div>
-          <div class="tx-amount ${isPositive ? 'positive' : 'negative'}">
-            ${isPositive ? '+' : '-'}$${parseFloat(tx.amount).toFixed(2)}
-          </div>
-        `;
-        txList.appendChild(div);
-      });
-    }
-
-    // ===== SESSION MANAGEMENT =====
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        showDashboard(session);
-      }
-    });
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        showDashboard(session);
-      } else if (event === 'SIGNED_OUT') {
-        hideDashboard();
-      }
-    });
-
-    function showDashboard(session) {
-      currentSession = session;
-      authView.classList.add('hidden');
-      dashboardView.classList.remove('hidden');
-      userEmail.textContent = session.user.email;
-      loadProfile();
-      loadTransactions();
-    }
-
-    function hideDashboard() {
-      currentSession = null;
-      authView.classList.remove('hidden');
-      dashboardView.classList.add('hidden');
-      actionForm.classList.add('hidden');
-      document.querySelectorAll('[data-mode]').forEach((b) => b.classList.remove('active'));
-      authForm.reset();
-      authMessage.classList.add('hidden');
-    }
-
     // ===== ADMIN PANEL =====
-
-    // Show admin modal on dot click
     adminDot.addEventListener('click', () => {
       adminOverlay.classList.remove('hidden');
-      // Reset if coming back
       if (!isAdminLoggedIn) {
         adminLoginSection.classList.remove('hidden');
         adminDashboard.classList.add('hidden');
         adminMessage.classList.add('hidden');
+        adminEmail.value = '';
+        adminPassword.value = '';
       }
     });
 
-    // Close admin modal
     adminCloseBtn.addEventListener('click', () => {
       adminOverlay.classList.add('hidden');
     });
@@ -774,7 +690,8 @@
       }
     });
 
-    // Admin login
+    let isAdminLoggedIn = false;
+
     adminLoginBtn.addEventListener('click', async () => {
       adminMessage.classList.add('hidden');
       const aEmail = adminEmail.value.trim();
@@ -796,7 +713,6 @@
         if (error) throw error;
 
         isAdminLoggedIn = true;
-        adminSession = data.session;
         adminLoginSection.classList.add('hidden');
         adminDashboard.classList.remove('hidden');
         adminEmailDisplay.textContent = aEmail;
@@ -809,20 +725,17 @@
       }
     });
 
-    // Admin logout
     adminLogoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut();
       isAdminLoggedIn = false;
-      adminSession = null;
       adminDashboard.classList.add('hidden');
       adminLoginSection.classList.remove('hidden');
       adminEmail.value = '';
       adminPassword.value = '';
       adminMessage.classList.add('hidden');
-      hideDashboard();
+      // If the regular user was also signed out, hideDashboard handles it
     });
 
-    // Refresh admin user list
     adminRefreshBtn.addEventListener('click', loadAdminUsers);
 
     async function loadAdminUsers() {
@@ -832,7 +745,7 @@
         .order('created_at', { ascending: false });
 
       if (error) {
-        adminUserList.innerHTML = `<div class="empty-state">Error: ${error.message}</div>`;
+        adminUserList.innerHTML = '<div class="empty-state">Error: ' + error.message + '</div>';
         return;
       }
 
@@ -842,33 +755,22 @@
         return;
       }
 
-      const table = document.createElement('table');
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Balance</th>
-            <th>Joined</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.map(u => `
-            <tr>
-              <td>${u.full_name || '—'}</td>
-              <td>${u.email || '—'}</td>
-              <td>$${parseFloat(u.balance || 0).toFixed(2)}</td>
-              <td>${new Date(u.created_at).toLocaleDateString()}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      `;
-      adminUserList.appendChild(table);
+      let html = '<table><thead><tr><th>Name</th><th>Email</th><th>Balance</th><th>Joined</th></tr></thead><tbody>';
+      data.forEach((u) => {
+        html += '<tr>' +
+          '<td>' + (u.full_name || '—') + '</td>' +
+          '<td>' + (u.email || '—') + '</td>' +
+          '<td>$' + parseFloat(u.balance || 0).toFixed(2) + '</td>' +
+          '<td>' + new Date(u.created_at).toLocaleDateString() + '</td>' +
+        '</tr>';
+      });
+      html += '</tbody></table>';
+      adminUserList.innerHTML = html;
     }
 
     function showAdminMessage(msg, type) {
       adminMessage.textContent = msg;
-      adminMessage.className = `message ${type}`;
+      adminMessage.className = 'message ' + type;
       adminMessage.classList.remove('hidden');
     }
   </script>
