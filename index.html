@@ -62,10 +62,10 @@
     }
     .btn-primary { background: #2563eb; color: #fff; }
     .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
     .btn-success { background: #059669; color: #fff; }
     .btn-success:hover { background: #047857; }
-    .btn-danger { background: #dc2626; color: #fff; }
-    .btn-danger:hover { background: #b91c1c; }
+    .btn-success:disabled { background: #6ee7b7; cursor: not-allowed; }
 
     .btn-outline {
       background: #fff;
@@ -79,14 +79,15 @@
       color: #fff;
     }
 
-    /* ===== AUTH FORM ===== */
+    /* ===== AUTH CARD ===== */
     .auth-card {
       background: #fff;
       padding: 32px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       max-width: 400px;
-      margin: 80px auto 0;
+      margin: 60px auto 0;
+      position: relative;
     }
     .auth-card h2 {
       font-size: 1.5rem;
@@ -97,6 +98,12 @@
       text-align: center;
       font-size: 2.5rem;
       margin-bottom: 8px;
+    }
+    .auth-card .subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
     }
 
     /* ===== FORMS ===== */
@@ -124,7 +131,7 @@
 
     .form-footer {
       text-align: center;
-      margin-top: 12px;
+      margin-top: 14px;
       font-size: 0.9rem;
       color: #6b7280;
     }
@@ -137,12 +144,89 @@
     .message {
       text-align: center;
       font-size: 0.9rem;
-      margin-top: 8px;
-      padding: 8px;
+      margin-top: 10px;
+      padding: 10px;
       border-radius: 8px;
     }
     .message.error { color: #dc2626; background: #fef2f2; }
     .message.success { color: #059669; background: #ecfdf5; }
+
+    /* ===== ADMIN DOT ===== */
+    .admin-dot {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #d1d5db;
+      cursor: pointer;
+      transition: background 0.2s;
+      z-index: 999;
+    }
+    .admin-dot:hover { background: #9ca3af; }
+
+    /* ===== ADMIN PANEL ===== */
+    .admin-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .admin-modal {
+      background: #fff;
+      padding: 32px;
+      border-radius: 16px;
+      width: 400px;
+      max-width: 90vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .admin-modal h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .admin-modal .close-btn {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #9ca3af;
+    }
+    .admin-modal .close-btn:hover { color: #374151; }
+    .admin-modal table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+    .admin-modal th, .admin-modal td {
+      padding: 8px 6px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .admin-modal th { font-weight: 600; color: #374151; }
+    .admin-modal .user-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .admin-modal .admin-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .admin-modal .admin-actions .btn { flex: 1; font-size: 0.85rem; padding: 8px 12px; }
+    .admin-modal .admin-login-btn {
+      width: 100%;
+      margin-top: 12px;
+      background: #7c3aed;
+      color: #fff;
+    }
+    .admin-modal .admin-login-btn:hover { background: #6d28d9; }
 
     /* ===== BALANCE CARD ===== */
     .balance-card {
@@ -244,6 +328,7 @@
     <div class="auth-card">
       <div class="logo-big">💸</div>
       <h2>PayFlow</h2>
+      <p class="subtitle">Send money to anyone, instantly</p>
 
       <form id="authForm">
         <div id="nameGroup" class="form-group hidden">
@@ -330,6 +415,46 @@
     </div>
   </div>
 
+  <!-- ===== ADMIN DOT ===== -->
+  <div class="admin-dot" id="adminDot" title="Admin Login"></div>
+
+  <!-- ===== ADMIN MODAL ===== -->
+  <div id="adminOverlay" class="admin-overlay hidden">
+    <div class="admin-modal">
+      <button class="close-btn" id="adminCloseBtn">&times;</button>
+      <h2>🔐 Admin Panel</h2>
+
+      <!-- Admin Login -->
+      <div id="adminLoginSection">
+        <div class="form-group">
+          <label for="adminEmail">Admin Email</label>
+          <input type="email" id="adminEmail" placeholder="admin@payflow.com" />
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" placeholder="••••••••" />
+        </div>
+        <button id="adminLoginBtn" class="btn admin-login-btn">Login as Admin</button>
+        <div id="adminMessage" class="message hidden"></div>
+      </div>
+
+      <!-- Admin Dashboard (shown after login) -->
+      <div id="adminDashboard" class="hidden">
+        <p style="font-size:0.9rem;color:#6b7280;margin-bottom:12px">
+          Logged in as: <strong id="adminEmailDisplay"></strong>
+        </p>
+        <h3 style="font-size:1rem;margin-bottom:8px">All Users</h3>
+        <div id="adminUserList" class="user-list">
+          <div class="empty-state">No users found.</div>
+        </div>
+        <div class="admin-actions">
+          <button id="adminRefreshBtn" class="btn btn-outline">🔄 Refresh</button>
+          <button id="adminLogoutBtn" class="btn btn-outline" style="color:#ef4444;border-color:#ef4444">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ===== SUPABASE CONFIG =====
     // !!! REPLACE THESE WITH YOUR OWN SUPABASE PROJECT CREDENTIALS !!!
@@ -364,12 +489,28 @@
     const actionMessage = $('actionMessage');
     const txList = $('txList');
 
+    // Admin elements
+    const adminDot = $('adminDot');
+    const adminOverlay = $('adminOverlay');
+    const adminCloseBtn = $('adminCloseBtn');
+    const adminLoginSection = $('adminLoginSection');
+    const adminDashboard = $('adminDashboard');
+    const adminEmail = $('adminEmail');
+    const adminPassword = $('adminPassword');
+    const adminLoginBtn = $('adminLoginBtn');
+    const adminMessage = $('adminMessage');
+    const adminEmailDisplay = $('adminEmailDisplay');
+    const adminUserList = $('adminUserList');
+    const adminRefreshBtn = $('adminRefreshBtn');
+    const adminLogoutBtn = $('adminLogoutBtn');
+
     let isSignUp = false;
     let currentMode = null;
     let currentSession = null;
-    let currentProfile = null;
+    let isAdminLoggedIn = false;
+    let adminSession = null;
 
-    // ===== AUTH TOGGLE =====
+    // ===== AUTH TOGGLE (Sign In / Sign Up) =====
     authToggleLink.addEventListener('click', () => {
       isSignUp = !isSignUp;
       nameGroup.classList.toggle('hidden', !isSignUp);
@@ -379,35 +520,42 @@
       authMessage.classList.add('hidden');
     });
 
-    // ===== AUTH SUBMIT =====
+    // ===== AUTH SUBMIT (Sign In / Sign Up) =====
     authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       authMessage.classList.add('hidden');
       authBtn.disabled = true;
+      const originalText = authBtn.textContent;
       authBtn.textContent = 'Please wait...';
 
       try {
         if (isSignUp) {
-          const { error } = await supabase.auth.signUp({
+          const { data, error } = await supabase.auth.signUp({
             email: email.value.trim(),
             password: password.value,
             options: { data: { full_name: fullName.value.trim() || 'User' } },
           });
           if (error) throw error;
-          showAuthMessage('Account created! Check your email for confirmation.', 'success');
+
+          // If sign-ups are auto-confirmed (no email verification), session will exist
+          if (data?.session) {
+            // Session listener will handle the UI switch
+          } else {
+            showAuthMessage('Account created! Check your email for confirmation link.', 'success');
+          }
         } else {
-          const { error } = await supabase.auth.signInWithPassword({
+          const { data, error } = await supabase.auth.signInWithPassword({
             email: email.value.trim(),
             password: password.value,
           });
           if (error) throw error;
-          // Session listener will handle the redirect
+          // Session listener will handle dashboard switch
         }
       } catch (err) {
         showAuthMessage(err.message, 'error');
       } finally {
         authBtn.disabled = false;
-        authBtn.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+        authBtn.textContent = originalText;
       }
     });
 
@@ -422,7 +570,7 @@
       await supabase.auth.signOut();
     });
 
-    // ===== ACTION BUTTONS =====
+    // ===== ACTION BUTTONS (Deposit / Withdraw / Transfer) =====
     document.querySelectorAll('[data-mode]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.mode;
@@ -463,6 +611,7 @@
       }
 
       actionSubmitBtn.disabled = true;
+      const originalText = actionSubmitBtn.textContent;
       actionSubmitBtn.textContent = 'Processing...';
 
       try {
@@ -503,8 +652,7 @@
         showActionMessage(err.message, 'error');
       } finally {
         actionSubmitBtn.disabled = false;
-        actionSubmitBtn.textContent =
-          currentMode === 'deposit' ? 'Deposit' : currentMode === 'withdraw' ? 'Withdraw' : 'Send Money';
+        actionSubmitBtn.textContent = originalText;
       }
     });
 
@@ -516,6 +664,7 @@
 
     // ===== LOAD PROFILE =====
     async function loadProfile() {
+      if (!currentSession) return;
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -525,12 +674,12 @@
         console.error('Load profile error:', error);
         return;
       }
-      currentProfile = data;
       balanceDisplay.textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
     }
 
     // ===== LOAD TRANSACTIONS =====
     async function loadTransactions() {
+      if (!currentSession) return;
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
@@ -568,34 +717,160 @@
     }
 
     // ===== SESSION MANAGEMENT =====
-    async function handleSession(session) {
-      if (session) {
-        currentSession = session;
-        authView.classList.add('hidden');
-        dashboardView.classList.remove('hidden');
-        userEmail.textContent = session.user.email;
-        await loadProfile();
-        await loadTransactions();
-      } else {
-        currentSession = null;
-        currentProfile = null;
-        authView.classList.remove('hidden');
-        dashboardView.classList.add('hidden');
-        actionForm.classList.add('hidden');
-        // Reset auth form
-        authForm.reset();
-        authMessage.classList.add('hidden');
-      }
-    }
-
-    // Initialize
     supabase.auth.getSession().then(({ data: { session } }) => {
-      handleSession(session);
+      if (session) {
+        showDashboard(session);
+      }
     });
 
     supabase.auth.onAuthStateChange((event, session) => {
-      handleSession(session);
+      if (event === 'SIGNED_IN' && session) {
+        showDashboard(session);
+      } else if (event === 'SIGNED_OUT') {
+        hideDashboard();
+      }
     });
+
+    function showDashboard(session) {
+      currentSession = session;
+      authView.classList.add('hidden');
+      dashboardView.classList.remove('hidden');
+      userEmail.textContent = session.user.email;
+      loadProfile();
+      loadTransactions();
+    }
+
+    function hideDashboard() {
+      currentSession = null;
+      authView.classList.remove('hidden');
+      dashboardView.classList.add('hidden');
+      actionForm.classList.add('hidden');
+      document.querySelectorAll('[data-mode]').forEach((b) => b.classList.remove('active'));
+      authForm.reset();
+      authMessage.classList.add('hidden');
+    }
+
+    // ===== ADMIN PANEL =====
+
+    // Show admin modal on dot click
+    adminDot.addEventListener('click', () => {
+      adminOverlay.classList.remove('hidden');
+      // Reset if coming back
+      if (!isAdminLoggedIn) {
+        adminLoginSection.classList.remove('hidden');
+        adminDashboard.classList.add('hidden');
+        adminMessage.classList.add('hidden');
+      }
+    });
+
+    // Close admin modal
+    adminCloseBtn.addEventListener('click', () => {
+      adminOverlay.classList.add('hidden');
+    });
+
+    adminOverlay.addEventListener('click', (e) => {
+      if (e.target === adminOverlay) {
+        adminOverlay.classList.add('hidden');
+      }
+    });
+
+    // Admin login
+    adminLoginBtn.addEventListener('click', async () => {
+      adminMessage.classList.add('hidden');
+      const aEmail = adminEmail.value.trim();
+      const aPass = adminPassword.value;
+
+      if (!aEmail || !aPass) {
+        showAdminMessage('Enter email and password', 'error');
+        return;
+      }
+
+      adminLoginBtn.disabled = true;
+      adminLoginBtn.textContent = 'Logging in...';
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: aEmail,
+          password: aPass,
+        });
+        if (error) throw error;
+
+        isAdminLoggedIn = true;
+        adminSession = data.session;
+        adminLoginSection.classList.add('hidden');
+        adminDashboard.classList.remove('hidden');
+        adminEmailDisplay.textContent = aEmail;
+        loadAdminUsers();
+      } catch (err) {
+        showAdminMessage(err.message, 'error');
+      } finally {
+        adminLoginBtn.disabled = false;
+        adminLoginBtn.textContent = 'Login as Admin';
+      }
+    });
+
+    // Admin logout
+    adminLogoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      isAdminLoggedIn = false;
+      adminSession = null;
+      adminDashboard.classList.add('hidden');
+      adminLoginSection.classList.remove('hidden');
+      adminEmail.value = '';
+      adminPassword.value = '';
+      adminMessage.classList.add('hidden');
+      hideDashboard();
+    });
+
+    // Refresh admin user list
+    adminRefreshBtn.addEventListener('click', loadAdminUsers);
+
+    async function loadAdminUsers() {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        adminUserList.innerHTML = `<div class="empty-state">Error: ${error.message}</div>`;
+        return;
+      }
+
+      adminUserList.innerHTML = '';
+      if (!data || data.length === 0) {
+        adminUserList.innerHTML = '<div class="empty-state">No users found.</div>';
+        return;
+      }
+
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Balance</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(u => `
+            <tr>
+              <td>${u.full_name || '—'}</td>
+              <td>${u.email || '—'}</td>
+              <td>$${parseFloat(u.balance || 0).toFixed(2)}</td>
+              <td>${new Date(u.created_at).toLocaleDateString()}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+      adminUserList.appendChild(table);
+    }
+
+    function showAdminMessage(msg, type) {
+      adminMessage.textContent = msg;
+      adminMessage.className = `message ${type}`;
+      adminMessage.classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
